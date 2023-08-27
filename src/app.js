@@ -9,7 +9,7 @@ function displayTemperature(response) {
   cityElement.innerHTML = response.data.city;
   descriptionElement.innerHTML = response.data.condition.description;
   humidityElement.innerHTML = response.data.temperature.humidity;
-  windElement.innerHTML = reponse.data.wind.speed;
+  windElement.innerHTML = Math.round(response.data.wind.speed);
 }
 
 let apiKey = "ddea304a0ddf145ce143f6ot637bfd08";
