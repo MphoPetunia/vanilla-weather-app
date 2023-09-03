@@ -21,7 +21,7 @@ function formatDate(timestanp) {
   return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast(response) {
+function displayForecast() {
   let forecastElement = document.querySelector("#forecast");
 
   forecastElement.innerHTML;
