@@ -24,26 +24,27 @@ function formatDate(timestanp) {
 function displayForecast() {
   let forecastElement = document.querySelector("#forecast");
 
-  forecastElement.innerHTML = `<div class="row">
-            <div class="col-2">
-              <div class="weather-forecast-date">Thu</div>
+  let forecastHTML = `<div class="row">`;
+  let days = ["Mon", "Tue", "Wed"];
+  days.forEach(function (day) {
+    forecastHTML =
+      forecastHTML +
+      `<div class="col-2">
+              <div class="weather-forecast-date">${day}</div>
             <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
             alt="" width="42" 
             />
-            <div class="waether-forecast-temperature">
+            <div class="weather-forecast-temperature">
               <span class="weather-forecast-temperature-max">
             29° </span>
-            <span class="weather-forecast-temperature-min">
-             9° </span>
+            <span class="weather-forecast-temperature-min"> 9° </span>
           </div>
         </div>
-       </div>`;
-}
+       `;
+  });
 
-function getForecast(coordinates) {
-  let apiKey = "ddea304a0ddf145ce143f6ot637bfd08";
-  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.lon}&lat=${coordinates.lat}&key=${apiKey}&units=metric`;
-  axios.get(apiUrl).then(displayForecast);
+  forecastHTML = forecastHTML + `</div>`;
+  forecastElement.innerHTML = forecastHTML;
 }
 
 function displayTemperature(response) {
