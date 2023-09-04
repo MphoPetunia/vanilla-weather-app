@@ -24,7 +24,20 @@ function formatDate(timestanp) {
 function displayForecast() {
   let forecastElement = document.querySelector("#forecast");
 
-  forecastElement.innerHTML;
+  forecastElement.innerHTML = `<div class="row">
+            <div class="col-2">
+              <div class="weather-forecast-date">Thu</div>
+            <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+            alt="" width="42" 
+            />
+            <div class="waether-forecast-temperature">
+              <span class="weather-forecast-temperature-max">
+            29° </span>
+            <span class="weather-forecast-temperature-min">
+             9° </span>
+          </div>
+        </div>
+       </div>`;
 }
 
 function getForecast(coordinates) {
@@ -95,3 +108,4 @@ let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 search("Rustenburg");
+displayForecast();
