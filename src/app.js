@@ -1,5 +1,5 @@
-function formatDate(timestanp) {
-  let date = new Date(timestanp);
+function formatDate(timestamp) {
+  let date = new Date(timestamp);
   let hours = date.getHours();
   if (hours < 10) {
     hours = `0${hours}`;
@@ -13,42 +13,70 @@ function formatDate(timestanp) {
     "Monday",
     "Tuesday",
     "Wednesday",
-    "Thurday",
+    "Thursday",
     "Friday",
-    "Saturday",
+    "Saterday",
   ];
   let day = days[date.getDay()];
   return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast() {
+function forematDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let day = date.getDay();
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  return days[day];
+}
+
+function displayForecast(response) {
+  let forecast = response.data.daily;
+
   let forecastElement = document.querySelector("#forecast");
 
   let forecastHTML = `<div class="row">`;
-  let days = ["Mon", "Tue", "Wed"];
-  days.forEach(function (day) {
-    forecastHTML =
-      forecastHTML +
-      `<div class="col-2">
-              <div class="weather-forecast-date">${day}</div>
-            <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
-            alt="" width="42" 
-            />
-            <div class="weather-forecast-temperature">
-              <span class="weather-forecast-temperature-max">
-            29° </span>
-            <span class="weather-forecast-temperature-min"> 9° </span>
-          </div>
-        </div>
-       `;
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 6) {
+      forecastHTML =
+        forecastHTML +
+        `
+ 
+   <div class="col-2">
+     <div class="weather-forecast-date">${forematDay(forecastDay.time)}</div>
+
+     <img
+       src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${
+         forecastDay.condition.icon
+       }.png"
+       alt=""
+       width="42"
+     />
+<div class="weather-forecast-temperature">
+       <span class="weather-forecast-temperature-max"> ${Math.round(
+         forecastDay.temperature.maximum
+       )}° </span>
+       <span class="weather-forecast-temperature-min"> ${Math.round(
+         forecastDay.temperature.minimum
+       )}° </span>
+     </div>
+   </div>
+ `;
+    }
   });
 
   forecastHTML = forecastHTML + `</div>`;
   forecastElement.innerHTML = forecastHTML;
 }
 
+function getForecast(coordinates) {
+  console.log(coordinates);
+  let apikey = "ddea304a0ddf145ce143f6ot637bfd08";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apikey}&units=metric`;
+  console.log(apiUrl);
+  axios.get(apiUrl).then(displayForecast);
+}
+
 function displayTemperature(response) {
-  console.log(response.data);
   let temperatureElement = document.querySelector("#temperature");
   let cityElement = document.querySelector("#city");
   let descriptionElement = document.querySelector("#description");
@@ -67,14 +95,18 @@ function displayTemperature(response) {
   dateElement.innerHTML = formatDate(response.data.time * 1000);
   iconElement.setAttribute(
     "src",
+
     `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`
   );
   iconElement.setAttribute("alt", response.data.condition.description);
+
+  getForecast(response.data.coordinates);
 }
 
 function search(city) {
-  let apiKey = "ddea304a0ddf145ce143f6ot637bfd08";
-  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+  let apikey = "ddea304a0ddf145ce143f6ot637bfd08";
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apikey}&units=metric`;
+
   axios.get(apiUrl).then(displayTemperature);
 }
 
@@ -84,29 +116,7 @@ function handleSubmit(event) {
   search(cityInputElement.value);
 }
 
-function dispalyFahrenheitTemperature(event) {
-  event.preventDefault();
-  let temperatureElement = document.querySelector("#temperature");
-  let fahrenheitTemperature = (celsiusTemperature * 9) / 5 + 32;
-  temperatureElement.innerHTML = Math.round(fahrenheitTemperature);
-}
-
-function displayCelsiusTemperature(event) {
-  event.preventDefault();
-  let temperatureElement = document.querySelector("#temperature");
-  temperatureElement.innerHTML = Math.round(celsiusTemperature);
-
-  let celsiusTemperature = null;
-}
-
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", handleSubmit);
 
-let fahrenheitLink = document.querySelector("#fahrenheit-link");
-fahrenheitLink.addEventListener("click", dispalyFahrenheitTemperature);
-
-let celsiusLink = document.querySelector("#celsius-link");
-celsiusLink.addEventListener("click", displayCelsiusTemperature);
-
 search("Rustenburg");
-displayForecast();
